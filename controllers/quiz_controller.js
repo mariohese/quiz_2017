@@ -189,23 +189,59 @@ exports.check = function (req, res, next) {
 };
 
 
+/*
 // GET /quizzes/randomplay
 exports.randomplay = function (req, res, next) {
 
 
 	if (!req.session.array) { 
-		array = []; 
+		req.session.array = []; 
 		}
 
+    if (!req.session.score) { 
+        var req.session.score = 0;
+        }
+
 	var answer = req.query.answer || '';
+    
 
-	
 
-	
+    var quizzes = [];
 
-	
+       console.log("He llegado hasta el metodo1");
+    
+    allquizzes = models.Quiz.findAll({
 
-    models.Quiz.count(countOptions)
+            where: {
+                id: {$notIn: req.session.array}  
+                   }
+                }
+
+            );
+
+    if (allquizzes != null){
+            var j = Math.random() * quizzes.length;
+            var i = parseInt(j);
+            req.session.quiz = models.Quiz.findById(quizzes[i].id);
+
+            res.render('quizzes/random_play', {
+            quiz: req.session.quiz,
+            score: req.session.score,
+            answer: answer 
+        });
+    }
+
+    else {
+            res.render('quizzes/random_none', {
+                score: req.session.score;
+            });
+        }
+
+    console.log("He llegado hasta el metodo2");
+
+
+
+    /*models.Quiz.count()
     .then(function (count) {
 
 
@@ -218,47 +254,47 @@ exports.randomplay = function (req, res, next) {
         	);
 
     })
+
     .then(function (quizzes) {
         
-    	if (array.length == 0){
-		array.push(quiz.id);	
-		}
+        if (quizzes != null){
 
-		if (array.length == 1 && quiz.id != array[0]){
-		array.push(quiz.id);
-		}
+                var j = Math.random() * quizzes.length;
+                var i = parseInt(j);
+                return models.Quiz.findById(quizzes[i].id);
+        }
 
-		else{
+        else {
 
-			for (var i = 0; i < array.length; i++) {
-		
-				var j = array.length-1;
-
-				array[j] = quiz.id;
-
-				}
-			}
+            res.render('quizzes/random_none', {
+                score: req.session.score;
+            });
+        }
 
     })
+
+    .then(function (quiz) {
+        
+        req.session.quiz = quiz;
+
+        array.push(quiz.id);
+
+
+        res.render('quizzes/random_play', {
+        quiz: req.session.quiz,
+        score: req.session.score,
+        answer: answer 
+        });
+
+    })
+
+
     .catch(function (error) {
         next(error);
     });
-};
 
-
-
-
-  /*  var answer = req.query.answer || "";
-
-    var result = answer.toLowerCase().trim() === req.quiz.answer.toLowerCase().trim();
-    */
-
-    res.render('quizzes/randomcheck', {
-        quiz: req.session.quiz,
-        score: req.session.score,
-        result: result,
-        answer: answer 
-    });
+*/
+    
 };
 
 
@@ -269,12 +305,8 @@ exports.randomcheck = function (req, res, next) {
 
 	var answer = req.query.answer || "";
 
-    var result = answer.toLowerCase().trim() === req.quiz.answer.toLowerCase().trim();
+    var result = answer.toLowerCase().trim() === req.session.quiz.answer.toLowerCase().trim();
 
-  /*  var answer = req.query.answer || "";
-
-    var result = answer.toLowerCase().trim() === req.quiz.answer.toLowerCase().trim();
-    */
 
     res.render('quizzes/random_result', {
         score: req.session.score,
