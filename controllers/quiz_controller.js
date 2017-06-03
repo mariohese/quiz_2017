@@ -211,42 +211,6 @@ exports.randomplay = function (req, res, next) {
     
 
 
-/*    var quizzes = [];
-
-       console.log("He llegado hasta el metodo1");
-    
-    allquizzes = models.Quiz.findAll({
-
-            where: {
-                id: {$notIn: req.session.array}  
-                   }
-                }
-
-            );
-
-    if (allquizzes != null){
-            var j = Math.random() * quizzes.length;
-            var i = parseInt(j);
-            console.log(allquizzes[0]);
-            req.session.quiz = models.Quiz.findById(quizzes[i].id);
-
-            res.render('quizzes/random_play', {
-            quiz: req.session.quiz,
-            score: req.session.score,
-            answer: answer 
-        });
-    }
-
-    else {
-            res.render('quizzes/random_none', {
-                score: req.session.score
-            });
-        }
-
-    console.log("He llegado hasta el metodo2");
-
-*/
-
     models.Quiz.count()
     .then(function (count) {
 
@@ -309,6 +273,7 @@ exports.randomplay = function (req, res, next) {
         score: req.session.score,
         });
 
+
         } 
 
     })
@@ -328,11 +293,18 @@ exports.randomplay = function (req, res, next) {
 // GET /quizzes/randomresult
 exports.randomcheck = function (req, res, next) {
 
+	if (!req.session.score) { 
+        req.session.score = 0;
+        }
+
 	var score = 0;
     var answer = req.query.answer || "";
 
+    req.session.quiz = req.quiz;
+
     if (req.query.answer == req.session.quiz.answer){
-    	req.session.score++;
+    	score++;
+
     }
 
     var result = answer.toLowerCase().trim() === req.session.quiz.answer.toLowerCase().trim();
@@ -341,13 +313,16 @@ exports.randomcheck = function (req, res, next) {
         //req.session.score = req.session.score + 1;
     //}
 
-    score = req.session.score
+    req.session.score = score + req.session.score;
 
-    res.render('quizzes/random_result', {
-        score: score,
+   	res.render('quizzes/random_result', {
+        quiz:req.quiz,
+        score: req.session.score,
         result: result,
         answer: answer 
     });
+
+
 };
 
 
