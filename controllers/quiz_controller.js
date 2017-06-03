@@ -334,7 +334,7 @@ exports.randomcheck = function (req, res, next) {
     var result = answer.toLowerCase().trim() === req.session.quiz.answer.toLowerCase().trim();
 
     if (result == true){
-        req.session.score++;
+        ++req.session.score;
     }
 
 
