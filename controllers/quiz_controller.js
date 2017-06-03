@@ -256,10 +256,6 @@ exports.randomplay = function (req, res, next) {
             });
         }
 
-
-
-
-
     })
 
     .then(function (quiz) {
@@ -288,6 +284,8 @@ exports.randomplay = function (req, res, next) {
 
     
 };
+
+
 
 
 
