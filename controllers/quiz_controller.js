@@ -299,10 +299,34 @@ exports.randomcheck = function (req, res, next) {
         req.session.score = 0;
         }
 
+//Si existe el array de sesión y se ha repetido una pregunta, pondremos la puntuación a 0 ya que si
+//se ha vuelto a preguntar una pregunta ya preguntada es porque estamos en otra sesión nueva.
+	if (req.session.array){
+
+		for (var i = 0; i< req.session.array.length; i++){
+			if (req.quiz.id == req.session.array[i]){
+
+				req.session.score = 0;
+			}
+		}
+
+	}
+
+    if (!req.session.array) { 
+        req.session.array = [-1]; 
+        }
+
+
+
 	var score = req.session.score;
     var answer = req.query.answer || "";
 
     req.session.quiz = req.quiz;
+    req.session.array.push(req.quiz.id);
+
+
+
+
 
     if (req.query.answer == req.session.quiz.answer){
     	score = req.session.score + 1;
