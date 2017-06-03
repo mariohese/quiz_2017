@@ -248,9 +248,11 @@ exports.randomplay = function (req, res, next) {
         }
 
         else {
+        	var score = req.session.score;
+        	req.session.score = 0;
 
             res.render('quizzes/random_none', {
-                score: req.session.score
+                score: score
             });
         }
 
@@ -297,14 +299,18 @@ exports.randomcheck = function (req, res, next) {
         req.session.score = 0;
         }
 
-	var score = 0;
+	var score = req.session.score;
     var answer = req.query.answer || "";
 
     req.session.quiz = req.quiz;
 
     if (req.query.answer == req.session.quiz.answer){
-    	score++;
+    	score = req.session.score + 1;
+    	req.session.score = score;
+    }
 
+    else {
+    	req.session.score = 0;
     }
 
     var result = answer.toLowerCase().trim() === req.session.quiz.answer.toLowerCase().trim();
@@ -313,11 +319,10 @@ exports.randomcheck = function (req, res, next) {
         //req.session.score = req.session.score + 1;
     //}
 
-    req.session.score = score + req.session.score;
 
    	res.render('quizzes/random_result', {
         quiz:req.quiz,
-        score: req.session.score,
+        score: score,
         result: result,
         answer: answer 
     });
