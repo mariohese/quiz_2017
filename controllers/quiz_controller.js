@@ -328,7 +328,7 @@ exports.randomplay = function (req, res, next) {
 // GET /quizzes/randomresult
 exports.randomcheck = function (req, res, next) {
 
-
+	var score = 0;
     var answer = req.query.answer || "";
 
     if (req.query.answer == req.session.quiz.answer){
@@ -341,10 +341,10 @@ exports.randomcheck = function (req, res, next) {
         //req.session.score = req.session.score + 1;
     //}
 
-
+    score = req.session.score
 
     res.render('quizzes/random_result', {
-        score: req.session.score,
+        score: score,
         result: result,
         answer: answer 
     });
