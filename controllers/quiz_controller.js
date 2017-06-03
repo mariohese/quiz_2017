@@ -331,11 +331,15 @@ exports.randomcheck = function (req, res, next) {
 
     var answer = req.query.answer || "";
 
+    if (req.query.answer == req.session.quiz.answer){
+    	req.session.score++;
+    }
+
     var result = answer.toLowerCase().trim() === req.session.quiz.answer.toLowerCase().trim();
 
-    if (result == true){
-        ++req.session.score;
-    }
+    //if (result == true){
+        //req.session.score = req.session.score + 1;
+    //}
 
 
 
