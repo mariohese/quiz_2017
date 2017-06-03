@@ -295,20 +295,11 @@ exports.randomcheck = function (req, res, next) {
 
 	if (!req.session.score) { 
         req.session.score = 0;
+        console.log("Ha creado session score porque no existía");
         }
 
 //Si existe el array de sesión y se ha repetido una pregunta, pondremos la puntuación a 0 ya que si
 //se ha vuelto a preguntar una pregunta ya preguntada es porque estamos en otra sesión nueva.
-	if (req.session.array){
-
-		for (var i = 0; i< req.session.array.length; i++){
-			if (req.quiz.id == req.session.array[i]){
-
-				req.session.score = 0;
-			}
-		}
-
-	}
 
     if (!req.session.array) { 
         req.session.array = [-1]; 
@@ -324,8 +315,6 @@ exports.randomcheck = function (req, res, next) {
 
 
 
-
-
     if (req.query.answer == req.session.quiz.answer){
     	score = req.session.score + 1;
     	req.session.score = score;
@@ -333,6 +322,7 @@ exports.randomcheck = function (req, res, next) {
 
     else {
     	req.session.score = 0;
+    	score = 0;
     }
 
     var result = answer.toLowerCase().trim() === req.session.quiz.answer.toLowerCase().trim();
