@@ -211,19 +211,13 @@ exports.randomplay = function (req, res, next) {
     
 
 
-    models.Quiz.count()
-    .then(function (count) {
-
-
-        return models.Quiz.findAll({
+        models.Quiz.findAll({
 
             where: {
                 id: {$notIn: req.session.array}}
                 }
 
-            );
-
-    })
+            )  
 
     .then(function (quizzes) {
         
@@ -234,14 +228,13 @@ exports.randomplay = function (req, res, next) {
                 var j = Math.random() * quizzes.length;
                 i = parseInt(j);
 
-                console.log(quizzes[0]);
 
                 return models.Quiz.findById(quizzes[i].id);
 
 
         }
 
-        else if (req.session.score < req.session.array.length){
+        else if (quizzes.length == 0 && (score != req.session.array.length)){
             res.render('quizzes/nomore', {
                 
             });
@@ -265,6 +258,12 @@ exports.randomplay = function (req, res, next) {
         req.session.quiz = quiz;
 
         req.session.array.push(quiz.id);
+
+        for(var i = 0; i < req.session.array.length; i++){
+
+                    console.log("El array tiene dentro el id " + req.session.array[i]);
+
+        }
 
         res.render('quizzes/random_play', {
         quiz: req.session.quiz,
@@ -293,7 +292,7 @@ exports.randomplay = function (req, res, next) {
 // GET /quizzes/randomresult
 exports.randomcheck = function (req, res, next) {
 
-	if (!req.session.score) { 
+	if (req.session.score == undefined) { 
         req.session.score = 0;
         console.log("Ha creado session score porque no existía");
         }
@@ -301,8 +300,9 @@ exports.randomcheck = function (req, res, next) {
 //Si existe el array de sesión y se ha repetido una pregunta, pondremos la puntuación a 0 ya que si
 //se ha vuelto a preguntar una pregunta ya preguntada es porque estamos en otra sesión nueva.
 
-    if (!req.session.array) { 
+    if (req.session.array == undefined) { 
         req.session.array = [-1]; 
+        console.log("En randomcheck no existe el array");
         }
 
 
@@ -327,9 +327,6 @@ exports.randomcheck = function (req, res, next) {
 
     var result = answer.toLowerCase().trim() === req.session.quiz.answer.toLowerCase().trim();
 
-    //if (result == true){
-        //req.session.score = req.session.score + 1;
-    //}
 
 
    	res.render('quizzes/random_result', {
