@@ -1,3 +1,8 @@
+
+
+
+
+
 var models = require("../models");
 var Sequelize = require('sequelize');
 
@@ -228,3 +233,169 @@ exports.check = function (req, res, next) {
         answer: answer
     });
 };
+
+
+
+// GET /quizzes/randomplay
+exports.randomplay = function (req, res, next) {
+
+
+    if (!req.session.array) { 
+        req.session.array = [-1]; 
+        }
+
+    if (!req.session.score) { 
+        req.session.score = 0;
+        }
+
+    var answer = req.query.answer || '';
+    
+
+
+        models.Quiz.findAll({
+
+            where: {
+                id: {$notIn: req.session.array}}
+                }
+
+            )  
+
+    .then(function (quizzes) {
+        
+        var i = -1;
+
+        if ((quizzes != null) && (quizzes.length >0)){
+
+                var j = Math.random() * quizzes.length;
+                i = parseInt(j);
+
+
+                return models.Quiz.findById(quizzes[i].id);
+
+
+        }
+
+        else if (quizzes.length == 0 && (score != req.session.array.length)){
+            res.render('quizzes/nomore', {
+                
+            });
+        }
+
+        else {
+        	var score = req.session.score;
+        	req.session.score = 0;
+
+            res.render('quizzes/random_none', {
+                score: score
+            });
+        }
+
+    })
+
+    .then(function (quiz) {
+        
+        if(quiz!=null){
+
+        req.session.quiz = quiz;
+
+        req.session.array.push(quiz.id);
+
+        for(var i = 0; i < req.session.array.length; i++){
+
+                    console.log("El array tiene dentro el id " + req.session.array[i]);
+
+        }
+
+        res.render('quizzes/random_play', {
+        quiz: req.session.quiz,
+        score: req.session.score,
+        });
+
+
+        } 
+
+    })
+
+
+    .catch(function (error) {
+        next(error);
+    });
+
+
+    
+};
+
+
+
+
+
+
+// GET /quizzes/randomresult
+exports.randomcheck = function (req, res, next) {
+
+	if (req.session.score == undefined) { 
+        req.session.score = 0;
+        console.log("Ha creado session score porque no existía");
+        }
+
+//Si existe el array de sesión y se ha repetido una pregunta, pondremos la puntuación a 0 ya que si
+//se ha vuelto a preguntar una pregunta ya preguntada es porque estamos en otra sesión nueva.
+
+    if (req.session.array == undefined) { 
+        req.session.array = [-1]; 
+        console.log("En randomcheck no existe el array");
+        }
+
+
+
+	var score = req.session.score;
+    var answer = req.query.answer || "";
+
+    req.session.quiz = req.quiz;
+    req.session.array.push(req.quiz.id);
+
+
+
+    if (req.query.answer == req.session.quiz.answer){
+    	score = req.session.score + 1;
+    	req.session.score = score;
+    }
+
+    else {
+    	req.session.score = 0;
+    	score = 0;
+    }
+
+    var result = answer.toLowerCase().trim() === req.session.quiz.answer.toLowerCase().trim();
+
+
+
+   	res.render('quizzes/random_result', {
+        quiz:req.quiz,
+        score: score,
+        result: result,
+        answer: answer 
+    });
+
+
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

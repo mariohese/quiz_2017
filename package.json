@@ -9,10 +9,6 @@
     "migrate_heroku": "heroku run ./node_modules/.bin/sequelize db:migrate --url \\$DATABASE_URL",
     "seed_heroku": "heroku run ./node_modules/.bin/sequelize db:seed:all --url \\$DATABASE_URL"
   },
-  "engines": {
-    "node": "6.8.x",
-    "npm": "3.10.x"
-  },
   "dependencies": {
     "body-parser": "~1.16.0",
     "cookie-parser": "~1.4.3",
@@ -23,6 +19,7 @@
     "express-partials": "^0.3.0",
     "express-session": "^1.15.1",
     "method-override": "^2.3.7",
+
     "morgan": "~1.7.0",
     "pg": "^6.1.5",
     "pg-hstore": "^2.3.2",
