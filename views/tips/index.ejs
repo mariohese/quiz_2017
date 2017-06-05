@@ -8,22 +8,36 @@
 
         <li>
 
+            <%= tip.text %>
+
+                <% if (tip.Author){ %>
+                    ---> Pista generada por:
+                                <span id="autor"> 
+                                <%= tip.Author.username %>
+                                </span>
+
+                  <% } %>
+
             <% if (tip.accepted ||
                     (session.user && (session.user.isAdmin || (quizAuthorId && quizAuthorId === session.user.id)))) { %>
 
                 <%= tip.text %>
 
                 <% if (tip.Author){ %>
-                                ---> Pista generada por:
+                    ---> Pista generada por:
                                 <span id="autor"> 
                                 <%= tip.Author.username %>
                                 </span>
 
-                <% } %>
+                  <% } %>
 
 
 
             <% } %>
+
+
+
+
 
             <% if (!tip.accepted &&
                     (session.user && (session.user.isAdmin || (quizAuthorId && quizAuthorId === session.user.id)))) { %>
@@ -32,7 +46,7 @@
 
             <% } %>
 
-            <% if ((session.user && (session.user.isAdmin || (quizAuthorId && quizAuthorId === session.user.id)))) { %>
+            <% if ((session.user )) { %>
 
                 <a href="/quizzes/<%= quizId %>/tips/<%= tip.id %>?_method=DELETE"><button>Borrar</button></a>
 
