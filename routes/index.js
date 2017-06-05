@@ -38,24 +38,17 @@ router.get(/(?!\/new$|\/edit$|\/play$|\/check$|\/session$|\/(\d+)$)\/[^\/]*$/, f
 
 /* GET home page. */
 
-router.get('/', function (req, res, next) {
-    res.render('index');
+router.get('/', function(req, res, next) {
+  res.render('index', { title: 'Quiz' });
 });
 
 // Pagina de creditos
 router.get('/author', function (req, res, next) {
     res.render('author');
-
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Quiz' });
 });
 
-//Pagina de creditos
-router.get('/author', function(req, res, next){
-	res.render('author');
-});
 
-//Pagina de creditos
+//Pagina de ayuda
 router.get('/help', function(req, res, next){
 	res.render('help');
 
